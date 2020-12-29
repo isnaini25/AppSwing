@@ -16,10 +16,11 @@ class RecipeViewModel : ViewModel() {
     val actionState = MutableLiveData<ActionState<*>>()
 
     val listResp = MutableLiveData<List<Recipe>>()
+    val detailResp = MutableLiveData<Recipe>()
     val searchResp = MutableLiveData<List<Recipe>>()
 
     val query = MutableLiveData("")
-
+    val ids = MutableLiveData("")
 
     fun listRecipe(){
         viewModelScope.launch {
@@ -31,6 +32,17 @@ class RecipeViewModel : ViewModel() {
         }
     }
 
+    fun detailRecipe(ids: String? = this.ids.value){
+        ids?.let {
+            viewModelScope.launch {
+                loading.value = true
+                val resp = repo.detailRecipe(it)
+                actionState.value = resp
+                detailResp.value = resp.data
+                loading.value = false
+            }
+        }
+    }
 
     fun searchRecipe(query: String? = this.query.value){
         query?.let {

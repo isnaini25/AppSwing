@@ -18,6 +18,15 @@ class RecipeRepository {
         }
     }
 
+    suspend fun detailRecipe(ids: String) : ActionState<Recipe> {
+        return try {
+            val list = recipeService.detailRecipe(ids).await()
+            ActionState(list.results.first())
+        }catch (e: Exception){
+            ActionState(message = e.message, isSuccess = false)
+        }
+    }
+
     suspend fun searchRecipe(query: String) : ActionState<List<Recipe>> {
         return try {
             val list = recipeService.searchRecipe(query).await()
